@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://bpbh47y0kpggt"]
+
+[ext_resource type="Script" path="res://Scripts/MainTourney.cs" id="1_yeeyn"]
+[ext_resource type="PackedScene" uid="uid://ch5v2mscnaql6" path="res://Scenes/CustomButton.tscn" id="2_duiqx"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jq5il"]
+
+[node name="MainTourney" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_yeeyn")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jq5il")
+
+[node name="CustomButton" parent="PanelContainer" instance=ExtResource("2_duiqx")]
+layout_mode = 2
+text = "Press me"
+
+[connection signal="pressed" from="PanelContainer/CustomButton" to="." method="_on_custom_button_pressed"]
