@@ -6,6 +6,9 @@ public partial class MainTourney : Control
 {
 	private int Players = 32;
 	private List<Player> playerlist;
+	private ItemList VisualPairings;
+	[Export]
+	private Texture2D icon;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -18,10 +21,12 @@ public partial class MainTourney : Control
 			p.id = i;
 			p.score = 0;
 			playerlist.Add(p);
+			p.name = i.ToString();
 			//Add itself to played list just in case
 			p.addToPlayedList(i);
 
 		}
+		VisualPairings = (ItemList)GetNode("PanelContainer/VScrollBar/HBoxContainer/Pairings");
 
     }
 
@@ -31,11 +36,11 @@ public partial class MainTourney : Control
 		
 	}
 
-	private void decidePairings()
+	private List<Player[]> decidePairings(List<Player> bracket)
 	{
         Random random = new Random();
         //For each score bracket
-        var copy = playerlist;
+        var copy = bracket;
 		List<Player[]> pairings = new List<Player[]>();
 		while (copy.Count > 0)
 		{
@@ -73,18 +78,29 @@ public partial class MainTourney : Control
             }
 			
 		}
-		foreach (Player[] p in pairings) 
-		{
-			GD.Print(p[0].id);
-            GD.Print(p[1].id);
-			GD.Print("-----");
-        }
+
+		return pairings;
+
+
 
 	}
 
 	private void _on_custom_button_pressed()
 	{
-		decidePairings();
+		var pairings = decidePairings(playerlist);
+		printPairing(pairings);
 
     }
+
+	private void printPairing(List<Player[]> pairings)
+	{
+
+        foreach (Player[] p in pairings)
+        {
+			VisualPairings.AddItem(p[0].id.ToString(), icon);
+            VisualPairings.AddItem(p[1].id.ToString(), icon);
+        }
+        
+    }
+
 }
