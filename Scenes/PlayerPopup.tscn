@@ -1,0 +1,38 @@
+[gd_scene load_steps=2 format=3 uid="uid://dp2jkm7f57bcs"]
+
+[ext_resource type="Script" path="res://Scripts/PlayerPopup.cs" id="1_kdc2b"]
+
+[node name="PlayerPopup" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_kdc2b")
+
+[node name="Popup" type="Window" parent="."]
+initial_position = 1
+size = Vector2i(500, 250)
+
+[node name="MarginContainer" type="MarginContainer" parent="Popup"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Popup/MarginContainer"]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Popup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Player"
+
+[node name="Score" type="Label" parent="Popup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Current Score:"
+
+[node name="Give Win" type="Button" parent="Popup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Give Win"
+
+[connection signal="close_requested" from="Popup" to="." method="_on_popup_close_requested"]
+[connection signal="pressed" from="Popup/MarginContainer/VBoxContainer/Give Win" to="." method="_on_give_win_pressed"]

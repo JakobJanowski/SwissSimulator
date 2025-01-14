@@ -21,6 +21,7 @@ public partial class Player : Node2D
 	{
 	}
 
+
 	public void addToPlayedList(int opponentId) 
 	{ 
 		played.Add(opponentId);

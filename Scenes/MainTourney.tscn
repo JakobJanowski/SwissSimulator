@@ -40,24 +40,10 @@ text = "Press me"
 
 [node name="Pairings" type="ItemList" parent="PanelContainer/VScrollBar/HBoxContainer"]
 layout_mode = 2
+allow_reselect = true
+allow_rmb_select = true
 auto_height = true
 max_columns = 2
 
-[node name="PanelContainer" type="MarginContainer" parent="PanelContainer/VScrollBar/HBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="HSplitContainer" type="HSplitContainer" parent="PanelContainer/VScrollBar/HBoxContainer/PanelContainer"]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VScrollBar/HBoxContainer/PanelContainer/HSplitContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-alignment = 1
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/VScrollBar/HBoxContainer/PanelContainer/HSplitContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-alignment = 1
-
 [connection signal="pressed" from="PanelContainer/VScrollBar/HBoxContainer/CustomButton" to="." method="_on_custom_button_pressed"]
+[connection signal="item_activated" from="PanelContainer/VScrollBar/HBoxContainer/Pairings" to="." method="_on_pairings_item_activated"]

@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class MainTourney : Control
 {
@@ -10,8 +11,18 @@ public partial class MainTourney : Control
 	[Export]
 	private Texture2D icon;
 
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
+
+    
+
+
+    //TODO LIST Code wise only
+    //Give way to increase score - cheating immeditetyly i know
+    //Have pairings be done on a bracket by bracket basis
+    //Have a person be able to be knocked down a bracket
+    //Make the by abide by the above behavior
+
+    // Called when the node enters the scene tree for the first time.
+    public override void _Ready()
 	{
 		//Make the player list and set up with initial valus
 		playerlist = new List<Player>();
@@ -20,18 +31,26 @@ public partial class MainTourney : Control
 			Player p = new Player();
 			p.id = i;
 			p.score = 0;
-			playerlist.Add(p);
+			
 			p.name = i.ToString();
 			//Add itself to played list just in case
 			p.addToPlayedList(i);
+            playerlist.Add(p);
 
-		}
+        }
 		VisualPairings = (ItemList)GetNode("PanelContainer/VScrollBar/HBoxContainer/Pairings");
 
+		
+        
     }
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
+    private void MainTourney_GiveWin(Player winner)
+    {
+		GD.Print("Winner is you " + winner.name);
+    }
+
+    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    public override void _Process(double delta)
 	{
 		
 	}
@@ -40,7 +59,7 @@ public partial class MainTourney : Control
 	{
         Random random = new Random();
         //For each score bracket
-        var copy = bracket;
+        var copy = bracket.ToList();
 		List<Player[]> pairings = new List<Player[]>();
 		while (copy.Count > 0)
 		{
@@ -84,11 +103,38 @@ public partial class MainTourney : Control
 
 
 	}
+	//Sorts each player into their individual brackets
+	private Dictionary<int,List<Player>> determineBrackets()
+	{
+        Dictionary<int, List<Player>> initbrackets = new Dictionary<int, List<Player>>();
+		foreach (Player p in playerlist){
+			if (initbrackets.ContainsKey(p.score))
+			{
+				initbrackets[p.score].Add(p);
+			}
+			else
+			{
+				List<Player> temp = new List<Player>();
+				temp.Add(p);
+				initbrackets.Add(p.score, temp);
+			}
+		}
+		foreach (var x in initbrackets) 
+		{
+			//GD.Print("Key " + x.Key);
+			//foreach(var y in x.Value) { GD.Print(y.id); }
+		}
+		return initbrackets;
+	}
 
 	private void _on_custom_button_pressed()
 	{
-		var pairings = decidePairings(playerlist);
-		printPairing(pairings);
+		determineBrackets();
+
+        var pairings = decidePairings(playerlist);
+        GD.Print(playerlist.Count);
+        printPairing(pairings);
+		
 
     }
 
@@ -101,6 +147,31 @@ public partial class MainTourney : Control
             VisualPairings.AddItem(p[1].id.ToString(), icon);
         }
         
+    }
+	//Open up a window for that player
+	private void _on_pairings_item_activated(int index)
+	{
+		//TODO change to get player name
+		string name = VisualPairings.GetItemText(index);
+	
+		foreach (Player p in playerlist)
+		{
+			GD.Print(p.name);
+			if (p.name == name)
+			{
+				
+                var popup = GD.Load<PackedScene>("res://Scenes//PlayerPopup.tscn");
+				PlayerPopup playerPopup = (PlayerPopup)popup.Instantiate();
+				AddChild(playerPopup);
+				playerPopup.assignData(p);
+				//Force connect to popup signal
+				playerPopup.GiveWin += MainTourney_GiveWin;
+
+
+                break;
+			}
+		}
+
     }
 
 }
