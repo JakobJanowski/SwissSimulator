@@ -132,7 +132,6 @@ public partial class MainTourney : Control
 		determineBrackets();
 
         var pairings = decidePairings(playerlist);
-        GD.Print(playerlist.Count);
         printPairing(pairings);
 		
 
@@ -140,7 +139,8 @@ public partial class MainTourney : Control
 
 	private void printPairing(List<Player[]> pairings)
 	{
-
+		//TODO Figure out why it doesnt want to be exactly half the screen size
+		VisualPairings.FixedColumnWidth = (int)Math.Round((DisplayServer.WindowGetSize().X)/2.1);
         foreach (Player[] p in pairings)
         {
 			VisualPairings.AddItem(p[0].id.ToString(), icon);
@@ -154,9 +154,10 @@ public partial class MainTourney : Control
 		//TODO change to get player name
 		string name = VisualPairings.GetItemText(index);
 	
-		foreach (Player p in playerlist)
+
+
+        foreach (Player p in playerlist)
 		{
-			GD.Print(p.name);
 			if (p.name == name)
 			{
 				
