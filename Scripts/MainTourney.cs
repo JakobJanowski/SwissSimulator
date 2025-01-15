@@ -10,9 +10,15 @@ public partial class MainTourney : Control
 	private ItemList VisualPairings;
 	[Export]
 	private Texture2D icon;
+    [Export]
+    private Texture2D WinIcon;
+    [Export]
+    private Texture2D LossIcon;
+    [Export]
+    private Texture2D DrawIcon;
 
 
-    
+
 
 
     //TODO LIST Code wise only
@@ -33,15 +39,20 @@ public partial class MainTourney : Control
 			p.score = 0;
 			
 			p.name = i.ToString();
+			p.winloss = "";
 			//Add itself to played list just in case
 			p.addToPlayedList(i);
             playerlist.Add(p);
 
         }
 		VisualPairings = (ItemList)GetNode("PanelContainer/VScrollBar/HBoxContainer/Pairings");
+		playerlist[0].score = 2;
+        playerlist[4].score = 2;
+        playerlist[7].score = 2;
+        playerlist[1].score = 1;
 
-		
-        
+
+
     }
 
     private void MainTourney_GiveWin(Player winner)
@@ -54,7 +65,7 @@ public partial class MainTourney : Control
 	{
 		
 	}
-
+	//Create a list of pairings with each pair being next to each other
 	private List<Player[]> decidePairings(List<Player> bracket)
 	{
         Random random = new Random();
@@ -129,18 +140,23 @@ public partial class MainTourney : Control
 
 	private void _on_custom_button_pressed()
 	{
-		determineBrackets();
+		VisualPairings.Clear();
+        Dictionary<int, List<Player>>  brackets = determineBrackets();
+		//TODO have brackets overflow if needed
+		foreach (List<Player> p in brackets.Values)
+		{
+            var pairings = decidePairings(p);
+            printPairing(pairings);
 
-        var pairings = decidePairings(playerlist);
-        printPairing(pairings);
-		
+        }
+
 
     }
 
 	private void printPairing(List<Player[]> pairings)
 	{
-		//TODO Figure out why it doesnt want to be exactly half the screen size
-		VisualPairings.FixedColumnWidth = (int)Math.Round((DisplayServer.WindowGetSize().X)/2.1);
+		//Change size as needed
+        VisualPairings.FixedColumnWidth = (int)Math.Round((DisplayServer.WindowGetSize().X) / 2.1);
         foreach (Player[] p in pairings)
         {
 			VisualPairings.AddItem(p[0].id.ToString(), icon);
@@ -173,6 +189,17 @@ public partial class MainTourney : Control
 			}
 		}
 
+    }
+
+	private void _on_resized()
+	{
+        //TODO Figure out why it doesnt want to be exactly half the screen size
+		//Check if exists to prevent a exception
+		if(VisualPairings != null)
+		{
+            VisualPairings.FixedColumnWidth = (int)Math.Round((DisplayServer.WindowGetSize().X) / 2.1);
+        }
+       
     }
 
 }

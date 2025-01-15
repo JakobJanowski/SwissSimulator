@@ -1,8 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://bpbh47y0kpggt"]
+[gd_scene load_steps=8 format=3 uid="uid://bpbh47y0kpggt"]
 
 [ext_resource type="Script" path="res://Scripts/MainTourney.cs" id="1_yeeyn"]
 [ext_resource type="PackedScene" uid="uid://ch5v2mscnaql6" path="res://Scenes/CustomButton.tscn" id="2_duiqx"]
-[ext_resource type="Texture2D" uid="uid://hck20kevayr6" path="res://icon.svg" id="3_8iqit"]
+[ext_resource type="Texture2D" uid="uid://f7nf7ijejod0" path="res://Sprites/NoResult.png" id="2_lbe2q"]
+[ext_resource type="Texture2D" uid="uid://bkwlgq7tuvh4u" path="res://Sprites/Winner.png" id="3_14n4u"]
+[ext_resource type="Texture2D" uid="uid://ce0ifmk6ak7mk" path="res://Sprites/Loss.png" id="4_httn3"]
+[ext_resource type="Texture2D" uid="uid://bxtfw70kn4yfq" path="res://Sprites/Draw.png" id="5_v6tex"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jq5il"]
 
@@ -14,7 +17,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_yeeyn")
-icon = ExtResource("3_8iqit")
+icon = ExtResource("2_lbe2q")
+WinIcon = ExtResource("3_14n4u")
+LossIcon = ExtResource("4_httn3")
+DrawIcon = ExtResource("5_v6tex")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -45,5 +51,6 @@ allow_rmb_select = true
 auto_height = true
 max_columns = 2
 
+[connection signal="resized" from="." to="." method="_on_resized"]
 [connection signal="pressed" from="PanelContainer/VScrollBar/HBoxContainer/CustomButton" to="." method="_on_custom_button_pressed"]
 [connection signal="item_activated" from="PanelContainer/VScrollBar/HBoxContainer/Pairings" to="." method="_on_pairings_item_activated"]
