@@ -17,27 +17,32 @@ public partial class MainTourney : Control
     [Export]
     private Texture2D DrawIcon;
 
+	private List<Player> playerOverflow;
+
+	
+
 
 
 
 
     //TODO LIST Code wise only
     //Give way to increase score - cheating immeditetyly i know
-    //Have pairings be done on a bracket by bracket basis
-    //Have a person be able to be knocked down a bracket
-    //Make the by abide by the above behavior
+    //Have pairings be done on a bracket by bracket basis DONE!
+    //Have a person be able to be knocked down a bracket DONE!
+    //Make the by abide by the above behavior PROBABLY WORKS!
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
 	{
 		//Make the player list and set up with initial valus
 		playerlist = new List<Player>();
-		for (int i = 0; i < Players; i++) 
+        playerOverflow = new List<Player>();	
+
+        for (int i = 0; i < Players; i++) 
 		{
 			Player p = new Player();
 			p.id = i;
 			p.score = 0;
-			
 			p.name = i.ToString();
 			p.winloss = "";
 			//Add itself to played list just in case
@@ -80,34 +85,41 @@ public partial class MainTourney : Control
 			//If theres one left give the by
             if (copy.Count == 1)
 			{
-                Player by = new Player();
-                by.id = -1;
-                Player[] temp = { tplayer, by };
-                pairings.Add(temp);
-            }
-			//Get rid of target player
-			copy.RemoveAt(targetplayer);
-			//Find a match
-			while (copy.Count > 0) 
-			{
-                int secondTargetPlayer = random.Next(0, copy.Count);
-				if (!tplayer.getPlayed().Contains(secondTargetPlayer))
-				{
-					//Found
-					Player tplayer2 = copy[secondTargetPlayer];
-					Player[] temp = { tplayer, tplayer2 };
-					pairings.Add(temp);
-					copy.RemoveAt(secondTargetPlayer);
-					break;
-                }
-				else if (copy.Count <= 1) 
-				{
-                    break;
-				}
+				playerOverflow.Add(tplayer);
+                //Get rid of target player
+                copy.RemoveAt(targetplayer);
 
             }
-			
-		}
+			else
+			{
+                //Get rid of target player
+                copy.RemoveAt(targetplayer);
+                //Find a match
+                while (copy.Count > 0)
+                {
+					
+                    int secondTargetPlayer = random.Next(0, copy.Count);
+                    if (!tplayer.getPlayed().Contains(copy[secondTargetPlayer].id))
+                    {
+                        //Found
+                        Player tplayer2 = copy[secondTargetPlayer];
+                        Player[] temp = { tplayer, tplayer2 };
+                        pairings.Add(temp);
+                        copy.RemoveAt(secondTargetPlayer);
+                        break;
+                    }
+					//If a match failed add the player to the overflow list
+                    else if (copy.Count <= 1)
+                    {
+                        playerOverflow.Add(tplayer);
+                        break;
+                    }
+
+                }
+
+            }
+
+        }
 
 		return pairings;
 
@@ -142,14 +154,32 @@ public partial class MainTourney : Control
 	{
 		VisualPairings.Clear();
         Dictionary<int, List<Player>>  brackets = determineBrackets();
-		//TODO have brackets overflow if needed
 		foreach (List<Player> p in brackets.Values)
 		{
+			if(playerOverflow.Count > 0)
+			{
+                foreach (Player players in playerOverflow)
+                {
+                    p.Add(players);
+                }
+				playerOverflow.Clear();
+            }
             var pairings = decidePairings(p);
             printPairing(pairings);
 
         }
+		//If there are still players in overflow give them the by
+		if (playerOverflow.Count > 0) 
+		{
+			foreach (Player p in playerOverflow)
+			{
+				VisualPairings.AddItem(p.name, icon);
+                VisualPairings.AddItem("-1", icon);
 
+            }
+            playerOverflow.Clear();
+        }
+		GD.Print(VisualPairings.ItemCount);
 
     }
 
@@ -159,8 +189,8 @@ public partial class MainTourney : Control
         VisualPairings.FixedColumnWidth = (int)Math.Round((DisplayServer.WindowGetSize().X) / 2.1);
         foreach (Player[] p in pairings)
         {
-			VisualPairings.AddItem(p[0].id.ToString(), icon);
-            VisualPairings.AddItem(p[1].id.ToString(), icon);
+			VisualPairings.AddItem(p[0].name, icon);
+            VisualPairings.AddItem(p[1].name, icon);
         }
         
     }
@@ -169,9 +199,6 @@ public partial class MainTourney : Control
 	{
 		//TODO change to get player name
 		string name = VisualPairings.GetItemText(index);
-	
-
-
         foreach (Player p in playerlist)
 		{
 			if (p.name == name)
@@ -201,5 +228,6 @@ public partial class MainTourney : Control
         }
        
     }
+
 
 }
