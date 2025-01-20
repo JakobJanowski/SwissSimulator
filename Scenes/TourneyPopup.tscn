@@ -1,0 +1,43 @@
+[gd_scene load_steps=2 format=3 uid="uid://cc3vu38461tq4"]
+
+[ext_resource type="Script" path="res://Scripts/TourneyPopup.cs" id="1_eqshr"]
+
+[node name="TourneyPopup" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_eqshr")
+
+[node name="Popup" type="Window" parent="."]
+initial_position = 1
+size = Vector2i(500, 250)
+
+[node name="MarginContainer" type="MarginContainer" parent="Popup"]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 496.0
+offset_bottom = 246.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Popup/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Popup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "New Tournament"
+horizontal_alignment = 1
+
+[node name="Participents" type="TextEdit" parent="Popup/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(500, 100)
+layout_mode = 2
+placeholder_text = "Enter Names. One Name per Line"
+scroll_smooth = true
+
+[node name="Button" type="Button" parent="Popup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Start "
+
+[connection signal="close_requested" from="Popup" to="." method="_on_popup_close_requested"]
+[connection signal="pressed" from="Popup/MarginContainer/VBoxContainer/Button" to="." method="_on_button_pressed"]

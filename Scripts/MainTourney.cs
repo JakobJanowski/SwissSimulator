@@ -31,6 +31,10 @@ public partial class MainTourney : Control
     //Have a person be able to be knocked down a bracket DONE!
     //Make the by abide by the above behavior PROBABLY WORKS!
 
+    //NOTE
+    //REDO ID on a player drop, it will be easier
+    //We need to purge the player anyway so this will hopefully prevent things from breaking
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
 	{
@@ -38,31 +42,39 @@ public partial class MainTourney : Control
 		playerlist = new List<Player>();
         playerOverflow = new List<Player>();	
 
-        for (int i = 0; i < Players; i++) 
-		{
-			Player p = new Player();
-			p.id = i;
-			p.score = 0;
-			p.name = i.ToString();
-			p.winloss = "";
-			//Add itself to played list just in case
-			p.addToPlayedList(i);
-            playerlist.Add(p);
-
-        }
-		VisualPairings = (ItemList)GetNode("PanelContainer/VScrollBar/HBoxContainer/Pairings");
-		playerlist[0].score = 2;
-        playerlist[4].score = 2;
-        playerlist[7].score = 2;
-        playerlist[1].score = 1;
+        
+		VisualPairings = (ItemList)GetNode("PanelContainer/MarginContainer/VScrollBar/HBoxContainer/Pairings");
+		
 
 
 
     }
 
+	public void createPlayerList(String[] names)
+	{
+        
+        for (int i = 0; i < names.Count(); i++)
+        {
+            Player p = new Player();
+            p.id = i;
+            p.score = 0;
+            p.name = names[i];
+            p.winloss = "";
+            p.opponentID = -1;
+            p.listindex = -1;
+            //Add itself to played list just in case
+            p.addToPlayedList(i);
+            playerlist.Add(p);
+
+        }
+    }
+
     private void MainTourney_GiveWin(Player winner)
     {
-		GD.Print("Winner is you " + winner.name);
+        playerlist[winner.id].winloss = "win";
+        VisualPairings.SetItemIcon(winner.listindex, WinIcon);
+        playerlist[winner.opponentID].winloss = "loss";
+        VisualPairings.SetItemIcon(playerlist[winner.opponentID].listindex, LossIcon);
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -153,6 +165,8 @@ public partial class MainTourney : Control
 	private void _on_custom_button_pressed()
 	{
 		VisualPairings.Clear();
+        //Increase score if needed
+        increasePlayerScore();
         Dictionary<int, List<Player>>  brackets = determineBrackets();
 		foreach (List<Player> p in brackets.Values)
 		{
@@ -174,7 +188,7 @@ public partial class MainTourney : Control
 			foreach (Player p in playerOverflow)
 			{
 				VisualPairings.AddItem(p.name, icon);
-                VisualPairings.AddItem("-1", icon);
+                VisualPairings.AddItem("By", icon);
 
             }
             playerOverflow.Clear();
@@ -183,14 +197,33 @@ public partial class MainTourney : Control
 
     }
 
+    private void increasePlayerScore()
+    {
+        foreach(var p in playerlist)
+        {
+            if(p.winloss == "win")
+            {
+                p.score = p.score + 3;
+            }
+            if(p.winloss == "loss")
+            {
+                p.score = p.score + 1;
+            }
+        }
+    }
+
 	private void printPairing(List<Player[]> pairings)
 	{
 		//Change size as needed
-        VisualPairings.FixedColumnWidth = (int)Math.Round((DisplayServer.WindowGetSize().X) / 2.1);
+        VisualPairings.FixedColumnWidth = (int)Math.Round((DisplayServer.WindowGetSize().X) / 2.1)-50;
         foreach (Player[] p in pairings)
         {
-			VisualPairings.AddItem(p[0].name, icon);
-            VisualPairings.AddItem(p[1].name, icon);
+		    playerlist[p[0].id].listindex = VisualPairings.AddItem(p[0].name, icon);
+            playerlist[p[1].id].listindex = VisualPairings.AddItem(p[1].name, icon);
+
+            //Add opponent to playerlist
+            playerlist[p[0].id].opponentID = p[1].id;
+            playerlist[p[1].id].opponentID = p[0].id;
         }
         
     }
@@ -224,7 +257,7 @@ public partial class MainTourney : Control
 		//Check if exists to prevent a exception
 		if(VisualPairings != null)
 		{
-            VisualPairings.FixedColumnWidth = (int)Math.Round((DisplayServer.WindowGetSize().X) / 2.1);
+            VisualPairings.FixedColumnWidth = (int)Math.Round((DisplayServer.WindowGetSize().X) / 2.1)-50;
         }
        
     }

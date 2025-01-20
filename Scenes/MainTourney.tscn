@@ -30,21 +30,31 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_jq5il")
+metadata/_edit_use_anchors_ = true
 
-[node name="VScrollBar" type="ScrollContainer" parent="PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="VScrollBar" type="ScrollContainer" parent="PanelContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="VBoxContainer" parent="PanelContainer/VScrollBar"]
+[node name="HBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VScrollBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 20
 
-[node name="CustomButton" parent="PanelContainer/VScrollBar/HBoxContainer" instance=ExtResource("2_duiqx")]
+[node name="CustomButton" parent="PanelContainer/MarginContainer/VScrollBar/HBoxContainer" instance=ExtResource("2_duiqx")]
 layout_mode = 2
-text = "Press me"
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Creating Pairing"
 
-[node name="Pairings" type="ItemList" parent="PanelContainer/VScrollBar/HBoxContainer"]
+[node name="Pairings" type="ItemList" parent="PanelContainer/MarginContainer/VScrollBar/HBoxContainer"]
 layout_mode = 2
 allow_reselect = true
 allow_rmb_select = true
@@ -52,5 +62,5 @@ auto_height = true
 max_columns = 2
 
 [connection signal="resized" from="." to="." method="_on_resized"]
-[connection signal="pressed" from="PanelContainer/VScrollBar/HBoxContainer/CustomButton" to="." method="_on_custom_button_pressed"]
-[connection signal="item_activated" from="PanelContainer/VScrollBar/HBoxContainer/Pairings" to="." method="_on_pairings_item_activated"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VScrollBar/HBoxContainer/CustomButton" to="." method="_on_custom_button_pressed"]
+[connection signal="item_activated" from="PanelContainer/MarginContainer/VScrollBar/HBoxContainer/Pairings" to="." method="_on_pairings_item_activated"]

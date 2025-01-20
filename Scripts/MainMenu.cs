@@ -18,7 +18,17 @@ public partial class MainMenu : Control
 
 	private void _on_custom_button_pressed()
 	{
-        GetTree().Root.AddChild(mainscene);
-		Hide();
+        var popup = GD.Load<PackedScene>("res://Scenes//TourneyPopup.tscn");
+        TourneyPopup playerPopup = (TourneyPopup)popup.Instantiate();
+        AddChild(playerPopup);
+        playerPopup.HideMainMenu += PlayerPopup_HideMainMenu;
+        //GetTree().Root.AddChild(mainscene);
+		//Hide();
+    }
+
+    private void PlayerPopup_HideMainMenu()
+    {
+        Hide();
     }
 }
+
