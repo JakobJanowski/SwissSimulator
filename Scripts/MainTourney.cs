@@ -19,21 +19,26 @@ public partial class MainTourney : Control
 
 	private List<Player> playerOverflow;
 
-	
 
+    private int winPoints = 3;
+    private int tiePoints = 1;
+    private int losspoints = 0;
 
 
 
 
     //TODO LIST Code wise only
-    //Give way to increase score - cheating immeditetyly i know
+    //Give way to increase score - cheating immeditetyly i know DONE!
     //Have pairings be done on a bracket by bracket basis DONE!
     //Have a person be able to be knocked down a bracket DONE!
     //Make the by abide by the above behavior PROBABLY WORKS!
+    //Fix infinite loop if everyone has been played
 
     //NOTE
     //REDO ID on a player drop, it will be easier
     //We need to purge the player anyway so this will hopefully prevent things from breaking
+
+    
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -71,10 +76,19 @@ public partial class MainTourney : Control
 
     private void MainTourney_GiveWin(Player winner)
     {
-        playerlist[winner.id].winloss = "win";
-        VisualPairings.SetItemIcon(winner.listindex, WinIcon);
-        playerlist[winner.opponentID].winloss = "loss";
-        VisualPairings.SetItemIcon(playerlist[winner.opponentID].listindex, LossIcon);
+        if (winner.opponentID != -1) 
+        {
+            playerlist[winner.id].winloss = "win";
+            VisualPairings.SetItemIcon(winner.listindex, WinIcon);
+            playerlist[winner.opponentID].winloss = "loss";
+            VisualPairings.SetItemIcon(playerlist[winner.opponentID].listindex, LossIcon);
+        }
+        else
+        {
+            playerlist[winner.id].winloss = "win";
+            VisualPairings.SetItemIcon(winner.listindex, WinIcon);
+        }
+       
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -187,7 +201,8 @@ public partial class MainTourney : Control
 		{
 			foreach (Player p in playerOverflow)
 			{
-				VisualPairings.AddItem(p.name, icon);
+				int index = VisualPairings.AddItem(p.name, icon);
+                p.listindex = index;
                 VisualPairings.AddItem("By", icon);
 
             }
@@ -196,19 +211,29 @@ public partial class MainTourney : Control
 		GD.Print(VisualPairings.ItemCount);
 
     }
-
+    //Increase score based on ranking
+    //Also reset some variables
     private void increasePlayerScore()
     {
         foreach(var p in playerlist)
         {
+            //By default 3 for winning, 1 for a tie, no for losing. Loss is still added in case its not default
             if(p.winloss == "win")
             {
-                p.score = p.score + 3;
+                p.score = p.score + winPoints;
             }
-            if(p.winloss == "loss")
+            else if(p.winloss == "tie")
             {
-                p.score = p.score + 1;
+                p.score = p.score + tiePoints;
             }
+            else if(p.winloss == "loss")
+            {
+                p.score = p.score + losspoints;
+            }
+            p.winloss = "";
+            p.opponentID = -1;
+            p.listindex = -1;
+
         }
     }
 
@@ -224,6 +249,9 @@ public partial class MainTourney : Control
             //Add opponent to playerlist
             playerlist[p[0].id].opponentID = p[1].id;
             playerlist[p[1].id].opponentID = p[0].id;
+
+            playerlist[p[0].id].addToPlayedList(p[1].id);
+            playerlist[p[1].id].addToPlayedList(p[0].id);
         }
         
     }
@@ -243,6 +271,8 @@ public partial class MainTourney : Control
 				playerPopup.assignData(p);
 				//Force connect to popup signal
 				playerPopup.GiveWin += MainTourney_GiveWin;
+                playerPopup.GiveTie += PlayerPopup_GiveTie;
+                playerPopup.DropMe += PlayerPopup_DropMe;
 
 
                 break;
@@ -251,7 +281,38 @@ public partial class MainTourney : Control
 
     }
 
-	private void _on_resized()
+    private void PlayerPopup_DropMe(Player winner)
+    {
+        //Remove player
+        playerlist.Remove(winner);
+        //Re give id
+        for (int i = 0; i < playerlist.Count; i++) 
+        {
+            playerlist[i].id = i;
+            //Undo pairing
+            playerlist[i].removeLastedPlayed();
+        }
+        //Re pair
+        _on_custom_button_pressed();
+    }
+
+    private void PlayerPopup_GiveTie(Player winner)
+    {
+        if (winner.opponentID != -1)
+        {
+            playerlist[winner.id].winloss = "tie";
+            VisualPairings.SetItemIcon(winner.listindex, DrawIcon);
+            playerlist[winner.opponentID].winloss = "tie";
+            VisualPairings.SetItemIcon(playerlist[winner.opponentID].listindex, DrawIcon);
+        }
+        else
+        {
+            playerlist[winner.id].winloss = "tie";
+            VisualPairings.SetItemIcon(winner.listindex, DrawIcon);
+        }
+    }
+
+    private void _on_resized()
 	{
         //TODO Figure out why it doesnt want to be exactly half the screen size
 		//Check if exists to prevent a exception

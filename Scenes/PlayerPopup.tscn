@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dp2jkm7f57bcs"]
+[gd_scene load_steps=3 format=3 uid="uid://dp2jkm7f57bcs"]
 
 [ext_resource type="Script" path="res://Scripts/PlayerPopup.cs" id="1_kdc2b"]
+[ext_resource type="PackedScene" uid="uid://ch5v2mscnaql6" path="res://Scenes/CustomButton.tscn" id="2_41aln"]
 
 [node name="PlayerPopup" type="Control"]
 layout_mode = 3
@@ -30,9 +31,23 @@ text = "Player"
 layout_mode = 2
 text = "Current Score:"
 
-[node name="Give Win" type="Button" parent="Popup/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Popup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Give Win" parent="Popup/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_41aln")]
 layout_mode = 2
 text = "Give Win"
 
+[node name="Give Tie" parent="Popup/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_41aln")]
+layout_mode = 2
+text = "Give Tie"
+
+[node name="Drop Player" parent="Popup/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_41aln")]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+text = "Drop Player"
+
 [connection signal="close_requested" from="Popup" to="." method="_on_popup_close_requested"]
-[connection signal="pressed" from="Popup/MarginContainer/VBoxContainer/Give Win" to="." method="_on_give_win_pressed"]
+[connection signal="pressed" from="Popup/MarginContainer/VBoxContainer/HBoxContainer/Give Win" to="." method="_on_give_win_pressed"]
+[connection signal="pressed" from="Popup/MarginContainer/VBoxContainer/HBoxContainer/Give Tie" to="." method="_on_give_tie_pressed"]
+[connection signal="pressed" from="Popup/MarginContainer/VBoxContainer/HBoxContainer/Drop Player" to="." method="_on_drop_player_pressed"]

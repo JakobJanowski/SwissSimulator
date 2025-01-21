@@ -10,6 +10,12 @@ public partial class PlayerPopup : Control
     [Signal]
     public delegate void GiveWinEventHandler(Player winner);
 
+    [Signal]
+    public delegate void GiveTieEventHandler(Player winner);
+
+    [Signal]
+    public delegate void DropMeEventHandler(Player winner);
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
 	{
@@ -34,8 +40,20 @@ public partial class PlayerPopup : Control
 	{
 		EmitSignal(SignalName.GiveWin,Me);
 	}
-	//Assign the popip info as needed
-	public void assignData(Player p)
+
+	private void _on_give_tie_pressed()
+	{
+        EmitSignal(SignalName.GiveTie, Me);
+    }
+
+	private void _on_drop_player_pressed()
+	{
+        EmitSignal(SignalName.DropMe, Me);
+		_on_popup_close_requested();
+    }
+
+    //Assign the popip info as needed
+    public void assignData(Player p)
 	{
 		Me = p;  
 		PopupName.Text = p.name;

@@ -35,6 +35,11 @@ public partial class Player : Node2D
 		played.Add(opponentId);
 	}
 
+	public void removeLastedPlayed()
+	{
+		played.RemoveAt(played.Count-1);
+	}
+
 	public List<int> getPlayed() { return played; }
 	
 }
