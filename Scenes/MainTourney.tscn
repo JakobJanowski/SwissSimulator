@@ -48,6 +48,13 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 20
 
+[node name="RoundLabel" type="Label" parent="PanelContainer/MarginContainer/VScrollBar/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Round 0"
+horizontal_alignment = 1
+
 [node name="CustomButton" parent="PanelContainer/MarginContainer/VScrollBar/HBoxContainer" instance=ExtResource("2_duiqx")]
 layout_mode = 2
 size_flags_horizontal = 4

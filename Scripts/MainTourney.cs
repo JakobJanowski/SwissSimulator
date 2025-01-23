@@ -19,24 +19,28 @@ public partial class MainTourney : Control
 
 	private List<Player> playerOverflow;
 
+    private int roundnum = 0;
 
     private int winPoints = 3;
     private int tiePoints = 1;
     private int losspoints = 0;
+    //So the first set of pairings can be created
+    private bool firstTime = true;
 
-
-
+    private Label roundLabel;
 
     //TODO LIST Code wise only
     //Give way to increase score - cheating immeditetyly i know DONE!
     //Have pairings be done on a bracket by bracket basis DONE!
     //Have a person be able to be knocked down a bracket DONE!
     //Make the by abide by the above behavior PROBABLY WORKS!
-    //Fix infinite loop if everyone has been played
+    //Fix infinite loop if everyone has been played DONE!
+    //Fix the by being weird FIXED
+    //Add repairing without issue DONE!
 
     //NOTE
     //REDO ID on a player drop, it will be easier
-    //We need to purge the player anyway so this will hopefully prevent things from breaking
+    //We need to purge the player anyway so this will hopefully prevent things from breaking DONE!
 
     
 
@@ -49,7 +53,7 @@ public partial class MainTourney : Control
 
         
 		VisualPairings = (ItemList)GetNode("PanelContainer/MarginContainer/VScrollBar/HBoxContainer/Pairings");
-		
+        roundLabel = (Label)GetNode("PanelContainer/MarginContainer/VScrollBar/HBoxContainer/RoundLabel");
 
 
 
@@ -99,14 +103,24 @@ public partial class MainTourney : Control
 	//Create a list of pairings with each pair being next to each other
 	private List<Player[]> decidePairings(List<Player> bracket)
 	{
+        
         Random random = new Random();
         //For each score bracket
         var copy = bracket.ToList();
 		List<Player[]> pairings = new List<Player[]>();
+        copy = copy.OrderBy(x => random.Next()).ToList();
 		while (copy.Count > 0)
 		{
-			//Get a random player in the bracket
-            int targetplayer = random.Next(0, copy.Count);
+            //Get a random player in the bracket with the highest score
+            //Copy should be random so the first player in a random list is random
+            int targetplayer = 0;
+            for(int i  = 0; i < copy.Count; i=i+1) 
+            { 
+                if(copy[i].score > copy[targetplayer].score)
+                {
+                    targetplayer = i;
+                }
+            }
             Player tplayer = copy[targetplayer];
 			//If theres one left give the by
             if (copy.Count == 1)
@@ -121,10 +135,16 @@ public partial class MainTourney : Control
                 //Get rid of target player
                 copy.RemoveAt(targetplayer);
                 //Find a match
+                List<int> attemptedindexs = new List<int>();
                 while (copy.Count > 0)
                 {
 					
                     int secondTargetPlayer = random.Next(0, copy.Count);
+                    if (!attemptedindexs.Contains(secondTargetPlayer))
+                    {
+                        attemptedindexs.Add(secondTargetPlayer);
+                    }
+                    
                     if (!tplayer.getPlayed().Contains(copy[secondTargetPlayer].id))
                     {
                         //Found
@@ -136,6 +156,11 @@ public partial class MainTourney : Control
                     }
 					//If a match failed add the player to the overflow list
                     else if (copy.Count <= 1)
+                    {
+                        playerOverflow.Add(tplayer);
+                        break;
+                    }
+                    else if (attemptedindexs.Count >= copy.Count)
                     {
                         playerOverflow.Add(tplayer);
                         break;
@@ -153,9 +178,9 @@ public partial class MainTourney : Control
 
 	}
 	//Sorts each player into their individual brackets
-	private Dictionary<int,List<Player>> determineBrackets()
+	private SortedDictionary<int,List<Player>> determineBrackets()
 	{
-        Dictionary<int, List<Player>> initbrackets = new Dictionary<int, List<Player>>();
+        SortedDictionary<int, List<Player>> initbrackets = new SortedDictionary<int, List<Player>>();
 		foreach (Player p in playerlist){
 			if (initbrackets.ContainsKey(p.score))
 			{
@@ -175,44 +200,91 @@ public partial class MainTourney : Control
 		}
 		return initbrackets;
 	}
-
+    //Creates a new set of pairings for each round, only works if all players have played
 	private void _on_custom_button_pressed()
 	{
-		VisualPairings.Clear();
+        bool allwins = true;
+        foreach (var player in playerlist)
+        { 
+            if(player.winloss == "")
+            {
+                allwins = false;
+            }
+        }
+
+        if (firstTime == true || allwins == true)
+        {
+            GD.Print("New round");
+            createNewRound();
+            roundnum = roundnum + 1;
+            roundLabel.Text = "Round " + roundnum;
+        }
+        else
+        {
+            GD.Print("Re-pairing");
+            rePair();
+        }
+        if (firstTime)
+        {
+            firstTime = false;
+        }
+
+		
+
+    }
+    //Increase score based on ranking
+    //Also reset some variables
+
+    private void createNewRound()
+    {
+        VisualPairings.Clear();
         //Increase score if needed
         increasePlayerScore();
-        Dictionary<int, List<Player>>  brackets = determineBrackets();
-		foreach (List<Player> p in brackets.Values)
-		{
-			if(playerOverflow.Count > 0)
-			{
+        SortedDictionary<int, List<Player>> brackets = determineBrackets();
+
+        foreach (List<Player> p in brackets.Values.Reverse())
+        {
+
+            if (playerOverflow.Count > 0)
+            {
                 foreach (Player players in playerOverflow)
                 {
+
                     p.Add(players);
                 }
-				playerOverflow.Clear();
+                playerOverflow.Clear();
             }
             var pairings = decidePairings(p);
             printPairing(pairings);
 
         }
-		//If there are still players in overflow give them the by
-		if (playerOverflow.Count > 0) 
-		{
-			foreach (Player p in playerOverflow)
-			{
-				int index = VisualPairings.AddItem(p.name, icon);
+        //If there are still players in overflow give them the by
+        if (playerOverflow.Count > 0)
+        {
+            foreach (Player p in playerOverflow)
+            {
+                int index = VisualPairings.AddItem(p.name, icon);
                 p.listindex = index;
+                p.addToPlayedList(-1);
                 VisualPairings.AddItem("By", icon);
 
             }
             playerOverflow.Clear();
         }
-		GD.Print(VisualPairings.ItemCount);
-
+        //GD.Print(VisualPairings.ItemCount);
     }
-    //Increase score based on ranking
-    //Also reset some variables
+
+    private void rePair()
+    {
+        for (int i = 0; i < playerlist.Count; i++)
+        {
+            //Undo pairing
+            playerlist[i].removeLastedPlayed();
+        }
+        //Redo round
+        createNewRound();
+    }
+
     private void increasePlayerScore()
     {
         foreach(var p in playerlist)
@@ -289,12 +361,11 @@ public partial class MainTourney : Control
         for (int i = 0; i < playerlist.Count; i++) 
         {
             playerlist[i].id = i;
-            //Undo pairing
-            playerlist[i].removeLastedPlayed();
         }
         //Re pair
-        _on_custom_button_pressed();
+        rePair();
     }
+
 
     private void PlayerPopup_GiveTie(Player winner)
     {
