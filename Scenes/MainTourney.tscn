@@ -42,26 +42,34 @@ theme_override_constants/margin_bottom = 50
 [node name="VScrollBar" type="ScrollContainer" parent="PanelContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VScrollBar"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VScrollBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 20
 
-[node name="RoundLabel" type="Label" parent="PanelContainer/MarginContainer/VScrollBar/HBoxContainer"]
+[node name="RoundLabel" type="Label" parent="PanelContainer/MarginContainer/VScrollBar/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Round 0"
 horizontal_alignment = 1
 
-[node name="CustomButton" parent="PanelContainer/MarginContainer/VScrollBar/HBoxContainer" instance=ExtResource("2_duiqx")]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VScrollBar/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="CustomButton" parent="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/HBoxContainer" instance=ExtResource("2_duiqx")]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 text = "Creating Pairing"
 
-[node name="Pairings" type="ItemList" parent="PanelContainer/MarginContainer/VScrollBar/HBoxContainer"]
+[node name="StandingsButton" parent="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/HBoxContainer" instance=ExtResource("2_duiqx")]
+layout_mode = 2
+text = "Show Standings"
+
+[node name="Pairings" type="ItemList" parent="PanelContainer/MarginContainer/VScrollBar/VBoxContainer"]
 layout_mode = 2
 allow_reselect = true
 allow_rmb_select = true
@@ -69,5 +77,6 @@ auto_height = true
 max_columns = 2
 
 [connection signal="resized" from="." to="." method="_on_resized"]
-[connection signal="pressed" from="PanelContainer/MarginContainer/VScrollBar/HBoxContainer/CustomButton" to="." method="_on_custom_button_pressed"]
-[connection signal="item_activated" from="PanelContainer/MarginContainer/VScrollBar/HBoxContainer/Pairings" to="." method="_on_pairings_item_activated"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/HBoxContainer/CustomButton" to="." method="_on_custom_button_pressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/HBoxContainer/StandingsButton" to="." method="_on_standings_button_pressed"]
+[connection signal="item_activated" from="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/Pairings" to="." method="_on_pairings_item_activated"]

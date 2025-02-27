@@ -36,8 +36,38 @@ layout_mode = 2
 text = "Swiss System"
 horizontal_alignment = 1
 
+[node name="Label2" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "Points for Winning"
+
+[node name="Wininput" type="LineEdit" parent="PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+placeholder_text = "3"
+
+[node name="Label3" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "Points for Drawing"
+
+[node name="Tie Input" type="LineEdit" parent="PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+placeholder_text = "1"
+
+[node name="Label4" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "Points for Losing"
+
+[node name="Loss Input" type="LineEdit" parent="PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+placeholder_text = "0"
+
 [node name="CustomButton" parent="PanelContainer/MarginContainer/HBoxContainer" instance=ExtResource("1_x5xwm")]
 layout_mode = 2
 text = "Start"
+
+[node name="Plug" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "By Jakub Janowski"
+horizontal_alignment = 2
+vertical_alignment = 2
 
 [connection signal="pressed" from="PanelContainer/MarginContainer/HBoxContainer/CustomButton" to="." method="_on_custom_button_pressed"]

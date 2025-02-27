@@ -7,6 +7,8 @@ public partial class PlayerPopup : Control
 	private Label Score;
 	private Player Me;
 
+	
+
     [Signal]
     public delegate void GiveWinEventHandler(Player winner);
 

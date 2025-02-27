@@ -52,11 +52,18 @@ public partial class MainTourney : Control
         playerOverflow = new List<Player>();	
 
         
-		VisualPairings = (ItemList)GetNode("PanelContainer/MarginContainer/VScrollBar/HBoxContainer/Pairings");
-        roundLabel = (Label)GetNode("PanelContainer/MarginContainer/VScrollBar/HBoxContainer/RoundLabel");
+		VisualPairings = (ItemList)GetNode("PanelContainer/MarginContainer/VScrollBar/VBoxContainer/Pairings");
+        roundLabel = (Label)GetNode("PanelContainer/MarginContainer/VScrollBar/VBoxContainer/RoundLabel");
 
 
 
+    }
+
+    public void assignWinLossDrawPoints(int winP,int tieP,int lossP)
+    {
+        winPoints = winP;
+        tiePoints = tieP;
+        losspoints = lossP;
     }
 
 	public void createPlayerList(String[] names)
@@ -392,6 +399,14 @@ public partial class MainTourney : Control
             VisualPairings.FixedColumnWidth = (int)Math.Round((DisplayServer.WindowGetSize().X) / 2.1)-50;
         }
        
+    }
+
+    private void _on_standings_button_pressed()
+    {
+        var popup = GD.Load<PackedScene>("res://Scenes//StandingsPopup.tscn");
+        StandingsPopup standingsPopup = (StandingsPopup)popup.Instantiate();
+        AddChild(standingsPopup);
+        standingsPopup.assignPlayerList(playerlist);
     }
 
 

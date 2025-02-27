@@ -4,11 +4,18 @@ using System;
 public partial class MainMenu : Control
 {
 	public Node mainscene;
+    private LineEdit winEdit;
+    private LineEdit tieEdit;
+    private LineEdit lossEdit;
 
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
+
+    // Called when the node enters the scene tree for the first time.
+    public override void _Ready()
 	{
-        mainscene = ResourceLoader.Load<PackedScene>("res://scenes/MainTourney.tscn").Instantiate();
+        mainscene = GD.Load<PackedScene>("res://Scenes/MainTourney.tscn").Instantiate();
+        winEdit = GetNode<LineEdit>("PanelContainer/MarginContainer/HBoxContainer/Wininput");
+        tieEdit = GetNode<LineEdit>("PanelContainer/MarginContainer/HBoxContainer/Tie Input");
+        lossEdit = GetNode<LineEdit>("PanelContainer/MarginContainer/HBoxContainer/Loss Input");
     }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -23,7 +30,41 @@ public partial class MainMenu : Control
         AddChild(playerPopup);
         playerPopup.HideMainMenu += PlayerPopup_HideMainMenu;
         //GetTree().Root.AddChild(mainscene);
-		//Hide();
+        //Hide();
+        int winpoints = 3;
+        int tiepoints = 1;
+        int losspoints = 0;
+        if (winEdit.Text.Length > 0) 
+        {
+            try
+            {
+                winpoints = winEdit.Text.ToInt();
+            }
+            catch 
+            { 
+            }
+        }
+        if (tieEdit.Text.Length > 0)
+        {
+            try
+            {
+                tiepoints = tieEdit.Text.ToInt();
+            }
+            catch
+            {
+            }
+        }
+        if (lossEdit.Text.Length > 0)
+        {
+            try
+            {
+                losspoints = lossEdit.Text.ToInt();
+            }
+            catch
+            {
+            }
+        }
+        playerPopup.assignCustomScores(winpoints, tiepoints, losspoints);   
     }
 
     private void PlayerPopup_HideMainMenu()
