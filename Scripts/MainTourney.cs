@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 public partial class MainTourney : Control
 {
@@ -347,17 +348,34 @@ public partial class MainTourney : Control
                 var popup = GD.Load<PackedScene>("res://Scenes//PlayerPopup.tscn");
 				PlayerPopup playerPopup = (PlayerPopup)popup.Instantiate();
 				AddChild(playerPopup);
-				playerPopup.assignData(p);
+				playerPopup.assignData(p,playerlist);
 				//Force connect to popup signal
 				playerPopup.GiveWin += MainTourney_GiveWin;
                 playerPopup.GiveTie += PlayerPopup_GiveTie;
                 playerPopup.DropMe += PlayerPopup_DropMe;
+                playerPopup.GiveLoss += PlayerPopup_GiveLoss;
 
 
                 break;
 			}
 		}
 
+    }
+
+    private void PlayerPopup_GiveLoss(Player loser)
+    {
+        if (loser.opponentID != -1)
+        {
+            playerlist[loser.id].winloss = "loss";
+            VisualPairings.SetItemIcon(loser.listindex, LossIcon);
+            playerlist[loser.opponentID].winloss = "win";
+            VisualPairings.SetItemIcon(playerlist[loser.opponentID].listindex, WinIcon);
+        }
+        else
+        {
+            playerlist[loser.id].winloss = "loss";
+            VisualPairings.SetItemIcon(loser.listindex, LossIcon);
+        }
     }
 
     private void PlayerPopup_DropMe(Player winner)

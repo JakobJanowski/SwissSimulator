@@ -31,6 +31,13 @@ text = "Player"
 layout_mode = 2
 text = "Current Score:"
 
+[node name="PlayersPlayed" type="Label" parent="Popup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Has Played Against:"
+
+[node name="ActualPlayerList" type="Label" parent="Popup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
 [node name="HBoxContainer" type="HBoxContainer" parent="Popup/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
@@ -42,6 +49,10 @@ text = "Give Win"
 layout_mode = 2
 text = "Give Tie"
 
+[node name="Give Loss" parent="Popup/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_41aln")]
+layout_mode = 2
+text = "Give Loss"
+
 [node name="Drop Player" parent="Popup/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_41aln")]
 layout_mode = 2
 tooltip_text = "This will trigger a re-pair"
@@ -51,4 +62,5 @@ text = "Drop Player"
 [connection signal="close_requested" from="Popup" to="." method="_on_popup_close_requested"]
 [connection signal="pressed" from="Popup/MarginContainer/VBoxContainer/HBoxContainer/Give Win" to="." method="_on_give_win_pressed"]
 [connection signal="pressed" from="Popup/MarginContainer/VBoxContainer/HBoxContainer/Give Tie" to="." method="_on_give_tie_pressed"]
+[connection signal="pressed" from="Popup/MarginContainer/VBoxContainer/HBoxContainer/Give Loss" to="." method="_on_give_loss_pressed"]
 [connection signal="pressed" from="Popup/MarginContainer/VBoxContainer/HBoxContainer/Drop Player" to="." method="_on_drop_player_pressed"]
