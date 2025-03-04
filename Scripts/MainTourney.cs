@@ -288,6 +288,8 @@ public partial class MainTourney : Control
         {
             //Undo pairing
             playerlist[i].removeLastedPlayed();
+            //reset winloss just in case
+            playerlist[i].winloss = "";
         }
         //Redo round
         createNewRound();
@@ -338,7 +340,7 @@ public partial class MainTourney : Control
 	//Open up a window for that player
 	private void _on_pairings_item_activated(int index)
 	{
-		//TODO change to get player name
+		
 		string name = VisualPairings.GetItemText(index);
         foreach (Player p in playerlist)
 		{
@@ -386,6 +388,8 @@ public partial class MainTourney : Control
         for (int i = 0; i < playerlist.Count; i++) 
         {
             playerlist[i].id = i;
+            //Remove first instance of id for itself and readd
+            playerlist[i].resetFirstPlayed();
         }
         //Re pair
         rePair();

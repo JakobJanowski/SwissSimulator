@@ -41,5 +41,11 @@ public partial class Player : Node2D
 	}
 
 	public List<int> getPlayed() { return played; }
+	//Remove the first instance in played and set itself to it, used in case of a dropped player
+	public void resetFirstPlayed()
+	{
+		played.RemoveAt(0);
+		played.Insert(0, id);
+	}
 	
 }
