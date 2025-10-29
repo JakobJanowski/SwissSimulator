@@ -11,9 +11,11 @@ config_version=5
 [application]
 
 config/name="SwissSim"
+config/version="1.1"
 run/main_scene="res://Scenes/Main Menu.tscn"
 config/features=PackedStringArray("4.3", "C#", "Forward Plus")
-config/icon="res://icon.svg"
+config/icon="res://Sprites/TCGIcon.png"
+config/windows_native_icon="res://Sprites/TCGIcon.ico"
 
 [dotnet]
 

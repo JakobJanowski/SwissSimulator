@@ -53,6 +53,10 @@ text = "Give Tie"
 layout_mode = 2
 text = "Give Loss"
 
+[node name="Give DoubleLoss" parent="Popup/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_41aln")]
+layout_mode = 2
+text = "Give Double Loss"
+
 [node name="Drop Player" parent="Popup/MarginContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_41aln")]
 layout_mode = 2
 tooltip_text = "This will trigger a re-pair"
@@ -63,4 +67,5 @@ text = "Drop Player"
 [connection signal="pressed" from="Popup/MarginContainer/VBoxContainer/HBoxContainer/Give Win" to="." method="_on_give_win_pressed"]
 [connection signal="pressed" from="Popup/MarginContainer/VBoxContainer/HBoxContainer/Give Tie" to="." method="_on_give_tie_pressed"]
 [connection signal="pressed" from="Popup/MarginContainer/VBoxContainer/HBoxContainer/Give Loss" to="." method="_on_give_loss_pressed"]
+[connection signal="pressed" from="Popup/MarginContainer/VBoxContainer/HBoxContainer/Give DoubleLoss" to="." method="_on_give_double_loss_pressed"]
 [connection signal="pressed" from="Popup/MarginContainer/VBoxContainer/HBoxContainer/Drop Player" to="." method="_on_drop_player_pressed"]

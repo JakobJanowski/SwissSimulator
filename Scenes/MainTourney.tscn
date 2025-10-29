@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bpbh47y0kpggt"]
+[gd_scene load_steps=9 format=3 uid="uid://bpbh47y0kpggt"]
 
 [ext_resource type="Script" path="res://Scripts/MainTourney.cs" id="1_yeeyn"]
 [ext_resource type="PackedScene" uid="uid://ch5v2mscnaql6" path="res://Scenes/CustomButton.tscn" id="2_duiqx"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://bkwlgq7tuvh4u" path="res://Sprites/Winner.png" id="3_14n4u"]
 [ext_resource type="Texture2D" uid="uid://ce0ifmk6ak7mk" path="res://Sprites/Loss.png" id="4_httn3"]
 [ext_resource type="Texture2D" uid="uid://bxtfw70kn4yfq" path="res://Sprites/Draw.png" id="5_v6tex"]
+[ext_resource type="Script" path="res://Scripts/TimerContainer.cs" id="7_3cenj"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jq5il"]
 
@@ -63,11 +64,49 @@ size_flags_horizontal = 4
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+tooltip_text = "Create a new paring
+Will start a new round if
+all players have results
+otherwise will shuffle pairings"
 text = "Creating Pairing"
 
 [node name="StandingsButton" parent="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/HBoxContainer" instance=ExtResource("2_duiqx")]
 layout_mode = 2
 text = "Show Standings"
+
+[node name="TimerContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VScrollBar/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+script = ExtResource("7_3cenj")
+
+[node name="Timer" type="Timer" parent="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/TimerContainer"]
+one_shot = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/TimerContainer"]
+layout_mode = 2
+
+[node name="TimerLabel" type="Label" parent="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/TimerContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "00:00"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/TimerContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/TimerContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+placeholder_text = "Enter Time(Minutes)"
+
+[node name="StartStopButton" parent="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/TimerContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_duiqx")]
+layout_mode = 2
+text = "Start/Stop"
+
+[node name="ResetButton" parent="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/TimerContainer/VBoxContainer/HBoxContainer" instance=ExtResource("2_duiqx")]
+layout_mode = 2
+text = "Reset"
 
 [node name="Pairings" type="ItemList" parent="PanelContainer/MarginContainer/VScrollBar/VBoxContainer"]
 layout_mode = 2
@@ -79,4 +118,7 @@ max_columns = 2
 [connection signal="resized" from="." to="." method="_on_resized"]
 [connection signal="pressed" from="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/HBoxContainer/CustomButton" to="." method="_on_custom_button_pressed"]
 [connection signal="pressed" from="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/HBoxContainer/StandingsButton" to="." method="_on_standings_button_pressed"]
+[connection signal="timeout" from="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/TimerContainer/Timer" to="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/TimerContainer" method="_on_timer_timeout"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/TimerContainer/VBoxContainer/HBoxContainer/StartStopButton" to="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/TimerContainer" method="_on_start_stop_button_pressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/TimerContainer/VBoxContainer/HBoxContainer/ResetButton" to="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/TimerContainer" method="_on_reset_button_pressed"]
 [connection signal="item_activated" from="PanelContainer/MarginContainer/VScrollBar/VBoxContainer/Pairings" to="." method="_on_pairings_item_activated"]

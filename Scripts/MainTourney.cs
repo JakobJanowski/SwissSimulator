@@ -326,7 +326,10 @@ public partial class MainTourney : Control
         foreach (Player[] p in pairings)
         {
 		    playerlist[p[0].id].listindex = VisualPairings.AddItem(p[0].name, icon);
+            //Set a tooltip hint for both players, using the last one to get the one that was just added
+            VisualPairings.SetItemTooltip(VisualPairings.ItemCount-1, "Double Click for entering results");
             playerlist[p[1].id].listindex = VisualPairings.AddItem(p[1].name, icon);
+            VisualPairings.SetItemTooltip(VisualPairings.ItemCount-1, "Double Click for entering results");
 
             //Add opponent to playerlist
             playerlist[p[0].id].opponentID = p[1].id;
@@ -356,12 +359,20 @@ public partial class MainTourney : Control
                 playerPopup.GiveTie += PlayerPopup_GiveTie;
                 playerPopup.DropMe += PlayerPopup_DropMe;
                 playerPopup.GiveLoss += PlayerPopup_GiveLoss;
-
+                playerPopup.GiveDoubleLoss += PlayerPopup_GiveDoubleLoss;
 
                 break;
 			}
 		}
 
+    }
+    //Give both players a loss
+    private void PlayerPopup_GiveDoubleLoss(Player loser)
+    {
+        playerlist[loser.id].winloss = "loss";
+        VisualPairings.SetItemIcon(loser.listindex, LossIcon);
+        playerlist[loser.opponentID].winloss = "loss";
+        VisualPairings.SetItemIcon(playerlist[loser.opponentID].listindex, LossIcon);
     }
 
     private void PlayerPopup_GiveLoss(Player loser)

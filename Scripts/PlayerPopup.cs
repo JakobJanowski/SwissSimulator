@@ -23,6 +23,9 @@ public partial class PlayerPopup : Control
     [Signal]
     public delegate void DropMeEventHandler(Player winner);
 
+    [Signal]
+    public delegate void GiveDoubleLossEventHandler(Player loser);
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
 	{
@@ -68,6 +71,12 @@ public partial class PlayerPopup : Control
         EmitSignal(SignalName.DropMe, Me);
 		_on_popup_close_requested();
     }
+
+	private void _on_give_double_loss_pressed()
+	{
+        EmitSignal(SignalName.GiveDoubleLoss, Me);
+        _on_popup_close_requested();
+    }		
 
     //Assign the popip info as needed
     public void assignData(Player p,List<Player> players)
